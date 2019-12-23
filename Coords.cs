@@ -47,7 +47,9 @@ return new Coords(a.x - b.x,a.y-b.y,a.z - b.z);
         return new Vector3(x, y, z);
     }
 
-    
+    public static Coords Perp(Coords v){
+        return new Coords(-v.y,v.x);
+    }    
 
     static public void DrawLine(Coords startPoint, Coords endPoint, float width, Color colour)
     {

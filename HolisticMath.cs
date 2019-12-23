@@ -19,7 +19,7 @@ public class HolisticMath
          t = Mathf.Clamp(t,0,1);
          Coords v = new Coords(B.x-A.x,B.y-A.y,B.z-A.z);
          float xt = A.x +  v.x * t;
-         float yt  = A.y + v.x * t;
+         float yt  = A.y + v.y * t;
          float zt = A.z + v.z *t;
         return new Coords(xt,yt,zt);
     }
