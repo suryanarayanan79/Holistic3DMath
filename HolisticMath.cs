@@ -4,26 +4,6 @@ using UnityEngine;
 
 public class HolisticMath
 {
-    static public Coords GetNormal(Coords vector)
-    {
-        float length = Distance(new Coords(0, 0, 0), vector);
-        vector.x /= length;
-        vector.y /= length;
-        vector.z /= length;
-
-        return vector;
-    }
-
-     static public Coords Lerp(Coords A,Coords B,float t){
-         // b = a + v*t
-         t = Mathf.Clamp(t,0,1);
-         Coords v = new Coords(B.x-A.x,B.y-A.y,B.z-A.z);
-         float xt = A.x +  v.x * t;
-         float yt  = A.y + v.y * t;
-         float zt = A.z + v.z *t;
-        return new Coords(xt,yt,zt);
-    }
-
     static public float Distance(Coords point1, Coords point2)
     {
         float diffSquared = Square(point1.x - point2.x) + 
@@ -31,6 +11,17 @@ public class HolisticMath
                             Square(point1.z - point2.z);
         float squareRoot = Mathf.Sqrt(diffSquared);
         return squareRoot;
+    }
+
+    static public Coords Lerp(Coords A, Coords B, float t)
+    {
+        t = Mathf.Clamp(t, 0, 1);
+        Coords v = new Coords(B.x - A.x, B.y - A.y, B.z - A.z);
+        float xt = A.x + v.x * t;
+        float yt = A.y + v.y * t;
+        float zt = A.z + v.z * t;
+
+        return new Coords(xt, yt, zt);
     }
 
     static public float Square(float value)
@@ -48,26 +39,6 @@ public class HolisticMath
         float dotDivide = Dot(vector1, vector2) /
                     (Distance(new Coords(0, 0, 0), vector1) * Distance(new Coords(0, 0, 0), vector2));
         return Mathf.Acos(dotDivide); //radians.  For degrees * 180/Mathf.PI;
-    }
-
-    static public Coords Translate(Coords vector,Coords position,Coords facingDirection){
-        //is this in radians or in degree.
-        if(HolisticMath.Distance(new Coords(0,0,0),vector) <=0)return position;
-        //flip the facingDirection in along with vector direction.
-        float WorldAngle = HolisticMath.Angle(vector,new Coords(0,1,0));
-        //if(vector.y < 0) facingDirection = new Coords(facingDirection.x*-1,facingDirection.y*-1,facingDirection.z *-1 );
-        Debug.Log(vector.ToString());
-        //if y is negative then flip the facing Vector.
-        //how to flip the facing vector.
-        float angle = HolisticMath.Angle(vector,facingDirection);
-        bool clockWise = false;
-        
-        if(HolisticMath.Cross(vector,facingDirection).z < 0 ){
-            clockWise = true;
-        }
-        Coords resultVector = HolisticMath.Rotate(vector,angle + WorldAngle,clockWise);
-        Coords newPosition = new Coords(resultVector.x + position.x , resultVector.y + position.y,resultVector.z + position.z);
-        return newPosition;
     }
 
     static public Coords LookAt2D(Coords forwardVector, Coords position, Coords focusPoint)
@@ -92,6 +63,23 @@ public class HolisticMath
         float xVal = vector.x * Mathf.Cos(angle) - vector.y * Mathf.Sin(angle);
         float yVal = vector.x * Mathf.Sin(angle) + vector.y * Mathf.Cos(angle);
         return new Coords(xVal, yVal, 0);
+    }
+   
+    static public Coords Translate(Coords position, Coords facing, Coords vector)
+    {
+        if (HolisticMath.Distance(new Coords(0, 0, 0), vector) <= 0) return position;
+        float angle = HolisticMath.Angle(vector, facing);
+        float worldAngle = HolisticMath.Angle(vector, new Coords(0, 1, 0));
+        bool clockwise = false;
+        if (HolisticMath.Cross(vector, facing).z < 0)
+            clockwise = true;
+
+        vector = HolisticMath.Rotate(vector, angle + worldAngle, clockwise);
+
+        float xVal = position.x + vector.x;
+        float yVal = position.y + vector.y;
+        float zVal = position.z + vector.z;
+        return new Coords(xVal, yVal, zVal);
     }
 
     static public Coords Cross(Coords vector1, Coords vector2)

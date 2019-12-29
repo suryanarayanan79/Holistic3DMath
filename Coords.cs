@@ -29,14 +29,6 @@ public class Coords {
         z = vecpos.z;
     }
 
-    public static Coords operator +(Coords a , Coords b){
-return new Coords(a.x + b.x,a.y + b.y,a.z + b.z);
-
-    }
-public static Coords operator -(Coords a, Coords b){
-return new Coords(a.x - b.x,a.y-b.y,a.z - b.z);
-}
-
     public override string ToString()
     {
         return"(" + x + "," + y + "," + z +")";
@@ -47,9 +39,40 @@ return new Coords(a.x - b.x,a.y-b.y,a.z - b.z);
         return new Vector3(x, y, z);
     }
 
-    public static Coords Perp(Coords v){
-        return new Coords(-v.y,v.x);
-    }    
+    static public Coords operator+ (Coords a, Coords b)
+    {
+        Coords c = new Coords(a.x + b.x, a.y + b.y, a.z + b.z);
+        return c;
+    }
+
+    static public Coords operator*(Coords a , float b){
+        return new Coords(a.x * b,a.y * b,a.z * b);
+    }
+
+    static public Coords operator/ (Coords a , float b){
+        return new Coords(a.x / b,a.y /b , a.z / b);
+    }
+
+       static public Coords GetNormal(Coords vector)
+    {
+        float length = HolisticMath.Distance(new Coords(0, 0, 0), vector);
+        vector.x /= length;
+        vector.y /= length;
+        vector.z /= length;
+
+        return vector;
+    }
+
+    static public Coords operator- (Coords a, Coords b)
+    {
+        Coords c = new Coords(a.x - b.x, a.y - b.y, a.z - b.z);
+        return c;
+    }
+
+    static public Coords Perp(Coords v)
+    {
+        return new Coords(-v.y, v.x,0);
+    }
 
     static public void DrawLine(Coords startPoint, Coords endPoint, float width, Color colour)
     {
