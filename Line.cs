@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 public enum LINETYPE{
+    LINE,
     SEGMENT,
     RAY
 };
@@ -12,7 +13,7 @@ public class Line
  Coords v;
  LINETYPE type;
 
- public Line(Coords a , Coords b,LINETYPE _type = LINETYPE.SEGMENT){
+ public Line(Coords a , Coords b,LINETYPE _type = LINETYPE.LINE){
      pointA = a;
      pointB = b;
      v = b - a;
@@ -37,6 +38,10 @@ public class Line
  }
 
  public float IntersectAt(Line l){
+     if(HolisticMath.Dot(Coords.Perp(l.v),this.v) == 0){
+        // they are parallel vectors.
+        return float.NaN;
+     }
     Coords C = l.pointA - this.pointA;
     Coords prepU = Coords.Perp(l.v);
     float t1 = HolisticMath.Dot(prepU,C); 
