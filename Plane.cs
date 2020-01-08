@@ -2,31 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plane 
+public class Plane
 {
-    Coords pointA;
-    Coords pointB;
+    Coords A;
+    Coords B;
+    Coords C;
+    Coords v;
+    Coords u;
 
-    Coords pointC;
-    Coords vectorV;
-    Coords vectorU;
-
-    public Plane(Coords a,Coords b,Coords c){
-        pointA = a;
-        vectorV = b - a;
-        vectorU = c - a;
+    public Plane(Coords _A, Coords _B, Coords _C)
+    {
+        A = _A;
+        B = _B;
+        C = _C;
+        v = B - A;
+        u = C - A;
     }
 
-    public Plane(Coords A,Vector3 v, Vector3 u){
-        pointA = A;
-        vectorU = new Coords(u.x,u.y,u.z);
-        vectorV = new Coords(v.x,v.y,v.z);
+    public Plane(Coords _A, Vector3 V, Vector3 U)
+    {
+        A = _A;
+        v = new Coords(V.x, V.y, V.z);
+        u = new Coords(U.x, U.y, U.z);
     }
 
-    public Coords Lerp(float s , float t){
-        float xst = pointA.x + vectorU.x * s + vectorV.x * t;
-        float yst = pointA.y + vectorU.y * s + vectorV.y * t;
-        float zst = pointA.z + vectorU.z * s + vectorV.z * t;
-        return new Coords(xst,yst,zst);
+    public Coords Lerp(float s, float t)
+    {
+        float xst = A.x + v.x * s + u.x * t;
+        float yst = A.y + v.y * s + u.y * t;
+        float zst = A.z + v.z * s + u.z * t;
+
+        return new Coords(xst, yst, zst);
     }
+
 }

@@ -24,6 +24,21 @@ public class HolisticMath
         return new Coords(xt, yt, zt);
     }
 
+    static public Coords Translate(Coords position,Coords vector){
+// return Coords = translation matrix * position 
+    float[] translationValues =
+                {
+                    1,0,0,vector.x,
+                    0,1,0,vector.y,
+                    0,0,1,vector.z,
+                    0,0,0,1   
+                };
+        Matrix translationMatrix = new Matrix(4,4,translationValues);
+        Matrix pos = new Matrix(4,1,position.AsFloats());
+        Matrix result = translationMatrix * pos;
+        return result.AsCords();
+    }
+
     static public float Square(float value)
     {
         return value * value;

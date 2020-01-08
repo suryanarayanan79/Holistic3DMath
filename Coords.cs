@@ -7,12 +7,28 @@ public class Coords {
     public float x;
     public float y;
     public float z;
+    public float w;
 
     public Coords(float _X, float _Y)
     {
         x = _X;
         y = _Y;
         z = -1;
+    }
+
+      public Coords(float _X, float _Y , float _Z , float _W)
+    {
+        x = _X;
+        y = _Y;
+        z = _Z;
+        w = _W;
+    }
+      public Coords(Vector3 pos, float _W)
+    {
+        x = pos.x;
+        y = pos.y;
+        z = pos.z;
+        w = _W;
     }
 
     public Coords(float _X, float _Y, float _Z)
@@ -27,6 +43,11 @@ public class Coords {
         x = vecpos.x;
         y = vecpos.y;
         z = vecpos.z;
+    }
+
+    public float[] AsFloats(){
+        float[] values = {x,y,z,w};
+        return values;
     }
 
     public override string ToString()
