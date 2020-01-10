@@ -15,7 +15,7 @@ public Matrix(int r , int c,float[] v){
 }
 
 public Coords AsCords(){
-    if(rows == 4 || coloumns == 4){
+    if(rows == 4 && coloumns == 1){
         Coords temp = new Coords(values[0],values[1],values[2],values[3]);
         return temp;
     }else {
@@ -42,14 +42,14 @@ public static Matrix operator+ (Matrix a,Matrix b){
     }
     return new Matrix(a.rows,a.coloumns,addValues);
 }
-
+//TODO need to understand the code here.
     public static Matrix operator* (Matrix a,Matrix b){
     if(a.coloumns != b.rows) return null;
     float[] val = new float[a.rows * b.coloumns];
         for(int i = 0 ; i < a.rows ; i++){
             for(int j = 0 ; j < b.coloumns ; j++){
                 for(int k = 0 ; k < a.coloumns ; k++){
-                    val[i * b.coloumns + j] += a.values[i * a.coloumns + k] + b.values[k * b.coloumns +j];
+                    val[i * b.coloumns + j] += a.values[i * a.coloumns + k] * b.values[k * b.coloumns +j];
                 }
             }
         }

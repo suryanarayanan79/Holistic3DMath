@@ -1,19 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TransFormManager : MonoBehaviour
 {
 
-    public  GameObject point;
+    public  GameObject[] points;
     public float angle;
     public Vector3 translation;
+    public Vector3 scale;
+    public GameObject center;
+
     // Start is called before the first frame update
     void Start()
     {
-        Coords pos = new Coords(point.transform.position,1);
-        Vector3 temp = HolisticMath.Translate(pos,
-        new Coords(new Vector3(translation.x,translation.y,translation.z),0)).ToVector();
-        point.transform.position = temp;
+        Vector3 c = new Vector3(center.transform.position.x,center.transform.position.y,center.transform.position.z);
+
+        foreach (GameObject point in points){
+            Coords pos = new Coords(point.transform.position,1);
+            pos = HolisticMath.Translate(pos,new Coords(new Vector3(-c.x,-c.y,-c.z),0));
+            // point.transform.position = HolisticMath.Translate(pos,
+            // new Coords(new Vector3(translation.x,translation.y,translation.z),0)).ToVector();
+            pos = HolisticMath.ScaleTransForm(pos,scale.x,scale.y,scale.z);
+            point.transform.position = HolisticMath.Translate(pos,
+            new Coords(new Vector3(c.x,c.y,c.z),0)).ToVector();
+        }
     }
 }

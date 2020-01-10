@@ -39,6 +39,19 @@ public class HolisticMath
         return result.AsCords();
     }
 
+    static public Coords ScaleTransForm(Coords position,float scaleX,float ScaleY,float ScaleZ){
+    float[] scaleValues =   {
+        scaleX,0,0,0,
+        0,ScaleY,0,0,
+        0,0,ScaleZ,0,
+        0,0,0,1
+        };
+        Matrix scaleMatrix = new Matrix(4,4,scaleValues);
+        Matrix pos = new Matrix(4,1,position.AsFloats());
+        Matrix result = scaleMatrix * pos;
+        return result.AsCords();
+    }
+
     static public float Square(float value)
     {
         return value * value;
