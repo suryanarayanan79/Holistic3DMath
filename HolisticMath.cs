@@ -92,6 +92,51 @@ public class HolisticMath
         float yVal = vector.x * Mathf.Sin(angle) + vector.y * Mathf.Cos(angle);
         return new Coords(xVal, yVal, 0);
     }
+
+        static public Coords Rotate(Coords point, float anglex, bool clockwisex,float angley,bool clockwisey,float anglez,bool clockwisez) //in radians
+    {
+        if(clockwisex)
+        {
+            anglex = 2 * Mathf.PI - anglex;
+        }
+        if(clockwisey){
+            angley = 2* Mathf.PI - angley;
+        }
+        if(clockwisez){
+            anglez = 2* Mathf.PI - anglez;
+        }
+        float [] roationValesX = {
+            1,0,0,0,
+            0,Mathf.Cos(anglex),-Mathf.Sin(anglex),0,
+            0,Mathf.Sin(anglex),Mathf.Cos(anglex),0,
+            0,0,0,1
+        };
+
+        Matrix XRoll = new Matrix(4,4,roationValesX);
+
+        float [] roationValesY = {
+            Mathf.Cos(angley),0,Mathf.Sin(angley),0,
+            0,1,0,0,
+            -Mathf.Sin(angley),0,Mathf.Cos(angley),0,
+            0,0,0,1
+        };
+
+        Matrix YRoll = new Matrix(4,4,roationValesY);
+
+        float [] roationValesZ = {
+            Mathf.Cos(anglez),-Mathf.Sin(anglez),0,0,
+            Mathf.Sin(anglez),Mathf.Cos(anglez),0,0,
+            0,0,1,0,
+            0,0,0,1
+        };
+
+        Matrix ZRoll = new Matrix(4,4,roationValesZ);
+
+        Matrix pos = new Matrix(4,1,point.AsFloats());
+
+        Matrix result = ZRoll * YRoll * XRoll * pos;
+        return result.AsCords();
+    }
    
     static public Coords Translate(Coords position, Coords facing, Coords vector)
     {
