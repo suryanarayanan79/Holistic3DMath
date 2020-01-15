@@ -80,6 +80,31 @@ public class HolisticMath
         Coords newDir = HolisticMath.Rotate(forwardVector, angle, clockwise);
         return newDir;
     }
+    // Rotaion Matrix Construction using Quaternion.
+static public Coords Quaternion(Coords axis,float angle /*in randians*/){
+        Coords aNormal =  Coords.GetNormal(axis);
+        float w = Mathf.Cos(angle  / 2.0f);
+        float s = Mathf.Sin(angle  / 2.0f);
+        //quaternion equation.
+        Coords q = new Coords(aNormal.x * s ,aNormal.y * s , aNormal.z * s,w);
+        return q;
+    }
+    static public Coords QRotate(Coords position, Coords axis,float angle /*degree*/){
+        Coords aNormal =  Coords.GetNormal(axis);
+        float w = Mathf.Cos(angle * Mathf.Deg2Rad / 2);
+        float s = Mathf.Sin(angle * Mathf.Deg2Rad / 2);
+        //quaternion equation.
+        Coords q = new Coords(aNormal.x * s ,aNormal.y * s , aNormal.z * s,w);
+        float[] quaternionValues = {
+             1 - 2*q.y*q.y - 2*q.z*q.z, 2*q.x*q.y - 2*q.w*q.z,      2*q.x*q.z + 2*q.w*q.y,     0,
+             2*q.x*q.y + 2*q.w*q.z,     1 - 2*q.x*q.x - 2*q.z*q.z,  2*q.y*q.z - 2*q.w*q.x,     0,
+             2*q.x*q.z - 2*q.w*q.y,     2*q.y*q.z + 2*q.w*q.x,      1 - 2*q.x*q.x - 2*q.y*q.y, 0,
+             0,                         0,                          0,                         1 };
+        Matrix quaternionMatrix = new Matrix(4,4,quaternionValues);
+        Matrix pos = new Matrix(4,1,position.AsFloats());
+        Matrix result = quaternionMatrix * pos;
+        return result.AsCords();
+    }
 
     static public Coords Rotate(Coords vector, float angle, bool clockwise) //in radians
     {
@@ -136,6 +161,64 @@ public class HolisticMath
 
         Matrix result = ZRoll * YRoll * XRoll * pos;
         return result.AsCords();
+    }
+
+    // Rotaion Matrix Construction using Euler Angles.
+    static public Matrix GetRotaionMatrix( float anglex, bool clockwisex,float angley,bool clockwisey,float anglez,bool clockwisez) //in radians
+    {
+        if(clockwisex)
+        {
+            anglex = 2 * Mathf.PI - anglex;
+        }
+        if(clockwisey){
+            angley = 2* Mathf.PI - angley;
+        }
+        if(clockwisez){
+            anglez = 2* Mathf.PI - anglez;
+        }
+        float [] roationValesX = {
+            1,0,0,0,
+            0,Mathf.Cos(anglex),-Mathf.Sin(anglex),0,
+            0,Mathf.Sin(anglex),Mathf.Cos(anglex),0,
+            0,0,0,1
+        };
+
+        Matrix XRoll = new Matrix(4,4,roationValesX);
+
+        float [] roationValesY = {
+            Mathf.Cos(angley),0,Mathf.Sin(angley),0,
+            0,1,0,0,
+            -Mathf.Sin(angley),0,Mathf.Cos(angley),0,
+            0,0,0,1
+        };
+
+        Matrix YRoll = new Matrix(4,4,roationValesY);
+
+        float [] roationValesZ = {
+            Mathf.Cos(anglez),-Mathf.Sin(anglez),0,0,
+            Mathf.Sin(anglez),Mathf.Cos(anglez),0,0,
+            0,0,1,0,
+            0,0,0,1
+        };
+
+        Matrix ZRoll = new Matrix(4,4,roationValesZ);
+        // the matrix multiplication is from right to left.
+        Matrix result = ZRoll * YRoll * XRoll ;
+        return result;
+    }
+
+    static public float GetRotaionAxisAngle(Matrix rotaion){
+        float angle = 0;
+        angle = Mathf.Acos((rotaion.GetValue(0,0) + rotaion.GetValue(1,1) + rotaion.GetValue(2,2) + rotaion.GetValue(3,3) - 2 ) * 0.5f);
+        return angle;
+    }
+
+    // 
+    static public Coords GetRotationAxis(Matrix rotation,float angle /*angle is in radians*/){
+        float vx = (rotation.GetValue(2,1) - rotation.GetValue(1,2)) / 2 * Mathf.Sin(angle);
+        float vy = (rotation.GetValue(2,0) - rotation.GetValue(0,2)) / 2 * Mathf.Sin(angle);
+        float vz = (rotation.GetValue(1,0) - rotation.GetValue(0,1)) / 2 * Mathf.Sin(angle);
+        return new Coords(vx,vy,vz,0);
     }
    
     static public Coords Translate(Coords position, Coords facing, Coords vector)

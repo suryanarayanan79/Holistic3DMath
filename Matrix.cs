@@ -23,6 +23,10 @@ public Coords AsCords(){
     }
 }
 
+public float GetValue(int r , int c){
+    return values[r * coloumns + c];
+}
+
 public override string ToString(){
     string matrixStr="";
     for(int r = 0 ; r < rows ; r++){
